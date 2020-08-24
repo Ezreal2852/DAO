@@ -71,13 +71,9 @@ public extension DAO {
         if let items = store.getAllItems(fromTable: tbName) {
             var objects = [T]()
             for item in items {
-                if item is YTKKeyValueItem {
-                    let item = item as! YTKKeyValueItem
-                    if let itemObject = item.itemObject, itemObject is NSArray {
-                        let itemObject = itemObject as! NSArray
-                        if let object = itemObject.firstObject, object is String {
-                            objects.append(T.deserialize(from: object as? String) ?? T())
-                        }
+                if let item = item as? YTKKeyValueItem, let itemObject = item.itemObject as? NSArray {
+                    if let objectString = itemObject.firstObject as? String, let object = T.deserialize(from: objectString) {
+                        objects.append(object)
                     }
                 }
             }
